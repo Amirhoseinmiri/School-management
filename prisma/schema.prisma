@@ -1,0 +1,363 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
+}
+
+
+
+/// The `Admin` model represents an administrator in the school management system.
+/// - `id`: Unique identifier for the admin.
+/// - `username`: Unique username for the admin.
+
+
+
+
+
+
+/// The `Lesson` model represents a lesson in the school management system.
+/// - `id`: Unique identifier for the lesson.
+/// - `name`: Name of the lesson.
+/// - `day`: Day of the week the lesson takes place.
+/// - `startTime`: Start time of the lesson.
+/// - `endTime`: End time of the lesson.
+/// - `subjectId`: Identifier for the subject of the lesson.
+/// - `subject`: Relation to the `Subject` model.
+/// - `classId`: Identifier for the class the lesson belongs to.
+/// - `class`: Relation to the `Class` model.
+/// - `teacherId`: Identifier for the teacher of the lesson.
+/// - `teacher`: Relation to the `Teacher` model.
+/// - `exams`: List of exams related to the lesson.
+/// - `assignments`: List of assignments related to the lesson.
+/// - `attendances`: List of attendances related to the lesson.
+
+/// The `Exam` model represents an exam in the school management system.
+/// - `id`: Unique identifier for the exam.
+/// - `title`: Title of the exam.
+/// - `startTime`: Start time of the exam.
+/// - `endTime`: End time of the exam.
+/// - `lessonId`: Identifier for the lesson the exam belongs to.
+/// - `lesson`: Relation to the `Lesson` model.
+/// - `results`: List of results related to the exam.
+
+/// The `Assignment` model represents an assignment in the school management system.
+/// - `id`: Unique identifier for the assignment.
+/// - `title`: Title of the assignment.
+/// - `startDate`: Start date of the assignment.
+/// - `dueDate`: Due date of the assignment.
+/// - `lessonId`: Identifier for the lesson the assignment belongs to.
+/// - `lesson`: Relation to the `Lesson` model.
+/// - `results`: List of results related to the assignment.
+
+/// The `Result` model represents a result in the school management system.
+/// - `id`: Unique identifier for the result.
+/// - `score`: Score of the result.
+/// - `examId`: Optional identifier for the exam the result belongs to.
+/// - `exam`: Optional relation to the `Exam` model.
+/// - `assignmentId`: Optional identifier for the assignment the result belongs to.
+/// - `assignment`: Optional relation to the `Assignment` model.
+/// - `studentId`: Identifier for the student the result belongs to.
+/// - `student`: Relation to the `Student` model.
+
+/// The `Attendance` model represents an attendance record in the school management system.
+/// - `id`: Unique identifier for the attendance.
+/// - `date`: Date of the attendance.
+/// - `present`: Boolean indicating if the student was present.
+/// - `studentId`: Identifier for the student the attendance belongs to.
+/// - `student`: Relation to the `Student` model.
+/// - `lessonId`: Identifier for the lesson the attendance belongs to.
+/// - `lesson`: Relation to the `Lesson` model.
+
+/// The `Event` model represents an event in the school management system.
+/// - `id`: Unique identifier for the event.
+/// - `title`: Title of the event.
+/// - `description`: Description of the event.
+/// - `startTime`: Start time of the event.
+/// - `endTime`: End time of the event.
+/// - `classId`: Optional identifier for the class the event belongs to.
+/// - `class`: Optional relation to the `Class` model.
+
+/// The `Announcement` model represents an announcement in the school management system.
+/// - `id`: Unique identifier for the announcement.
+/// - `title`: Title of the announcement.
+/// - `description`: Description of the announcement.
+/// - `date`: Date of the announcement.
+/// - `classId`: Optional identifier for the class the announcement belongs to.
+/// - `class`: Optional relation to the `Class` model.
+
+/// The `UserSex` enum represents the gender of a user.
+/// - `MALE`: Male gender.
+/// - `FEMALE`: Female gender.
+
+/// The `Day` enum represents the days of the week.
+/// - `MONDAY`: Monday.
+/// - `TUESDAY`: Tuesday.
+/// - `WEDNESDAY`: Wednesday.
+/// - `THURSDAY`: Thursday.
+/// - `FRIDAY`: Friday.
+
+
+model Admin {
+  id       String @id
+  username String @unique
+}
+
+/// The `Student` model represents a student in the school management system.
+/// - `id`: Unique identifier for the student.
+/// - `username`: Unique username for the student.
+/// - `name`: First name of the student.
+/// - `surname`: Last name of the student.
+/// - `email`: Optional unique email address of the student.
+/// - `phone`: Optional unique phone number of the student.
+/// - `address`: Address of the student.
+/// - `img`: Optional image URL of the student.
+/// - `bloodType`: Blood type of the student.
+/// - `sex`: Gender of the student.
+/// - `createdAt`: Timestamp when the student record was created.
+/// - `parentId`: Identifier for the parent of the student.
+/// - `parent`: Relation to the `Parent` model.
+/// - `classId`: Identifier for the class the student belongs to.
+/// - `class`: Relation to the `Class` model.
+/// - `gradeId`: Identifier for the grade the student is in.
+/// - `grade`: Relation to the `Grade` model.
+/// - `attendances`: List of attendances related to the student.
+/// - `results`: List of results related to the student.
+/// - `birthday`: Birthday of the student.
+model Student {
+  id          String       @id
+  username    String       @unique
+  name        String
+  surname     String
+  email       String?      @unique
+  phone       String?      @unique
+  address     String
+  img         String?
+  bloodType   String
+  sex         UserSex
+  createdAt   DateTime     @default(now())
+  parentId    String
+  parent      Parent       @relation(fields: [parentId], references: [id])
+  classId     Int
+  class       Class        @relation(fields: [classId], references: [id])
+  gradeId     Int
+  grade       Grade        @relation(fields: [gradeId], references: [id])
+  attendances Attendance[]
+  results     Result[]
+  birthday    DateTime
+}
+
+/// The `Teacher` model represents a teacher in the school management system.
+/// - `id`: Unique identifier for the teacher.
+/// - `username`: Unique username for the teacher.
+/// - `name`: First name of the teacher.
+/// - `surname`: Last name of the teacher.
+/// - `email`: Optional unique email address of the teacher.
+/// - `phone`: Optional unique phone number of the teacher.
+/// - `address`: Address of the teacher.
+/// - `img`: Optional image URL of the teacher.
+/// - `bloodType`: Blood type of the teacher.
+/// - `sex`: Gender of the teacher.
+/// - `createdAt`: Timestamp when the teacher record was created.
+/// - `subjects`: List of subjects taught by the teacher.
+/// - `lessons`: List of lessons taught by the teacher.
+/// - `classes`: List of classes supervised by the teacher.
+/// - `birthday`: Birthday of the teacher.
+model Teacher {
+  id        String    @id
+  username  String    @unique
+  name      String
+  surname   String
+  email     String?   @unique
+  phone     String?   @unique
+  address   String
+  img       String?
+  bloodType String
+  sex       UserSex
+  createdAt DateTime  @default(now())
+  subjects  Subject[]
+  lessons   Lesson[]
+  classes   Class[]
+  birthday  DateTime
+}
+
+/// The `Parent` model represents a parent in the school management system.
+/// - `id`: Unique identifier for the parent.
+/// - `username`: Unique username for the parent.
+/// - `name`: First name of the parent.
+/// - `surname`: Last name of the parent.
+/// - `email`: Optional unique email address of the parent.
+/// - `phone`: Unique phone number of the parent.
+/// - `address`: Address of the parent.
+/// - `createdAt`: Timestamp when the parent record was created.
+/// - `students`: List of students related to the parent.
+model Parent {
+  id        String    @id
+  username  String    @unique
+  name      String
+  surname   String
+  email     String?   @unique
+  phone     String    @unique
+  address   String
+  createdAt DateTime  @default(now())
+  students  Student[]
+}
+
+/// The `Grade` model represents a grade level in the school management system.
+/// - `id`: Unique identifier for the grade.
+/// - `level`: Unique level of the grade.
+/// - `students`: List of students in the grade.
+/// - `classess`: List of classes in the grade.
+model Grade {
+  id    Int @id @default(autoincrement())
+  level Int @unique
+  students Student[]
+  classess Class[]
+}
+
+
+/// The `Class` model represents a class in the school management system.
+/// - `id`: Unique identifier for the class.
+/// - `name`: Unique name of the class.
+/// - `capacity`: Capacity of the class.
+/// - `supervisorId`: Optional identifier for the supervisor of the class.
+/// - `supervisor`: Optional relation to the `Teacher` model.
+/// - `lessons`: List of lessons in the class.
+/// - `students`: List of students in the class.
+/// - `gradeId`: Identifier for the grade the class belongs to.
+/// - `grade`: Relation to the `Grade` model.
+/// - `events`: List of events related to the class.
+/// - `announcements`: List of announcements related to the class.
+
+model Class {
+  id       Int    @id @default(autoincrement())
+  name     String @unique
+  capacity Int
+  supervisorId  String?
+  supervisor    Teacher?       @relation(fields: [supervisorId], references: [id])
+  lessons       Lesson[]
+  students      Student[]
+  gradeId       Int
+  grade         Grade          @relation(fields: [gradeId], references: [id])
+  events        Event[]
+  announcements Announcement[]
+}
+
+
+/// The `Subject` model represents a subject in the school management system.
+/// - `id`: Unique identifier for the subject.
+/// - `name`: Unique name of the subject.
+/// - `teachers`: List of teachers teaching the subject.
+/// - `lessons`: List of lessons related to the subject.
+
+model Subject {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  teachers Teacher[]
+  lessons  Lesson[]
+}
+
+model Lesson {
+  id        Int      @id @default(autoincrement())
+  name      String
+  day       Day
+  startTime DateTime
+  endTime   DateTime
+
+  subjectId   Int
+  subject     Subject      @relation(fields: [subjectId], references: [id])
+  classId     Int
+  class       Class        @relation(fields: [classId], references: [id])
+  teacherId   String
+  teacher     Teacher      @relation(fields: [teacherId], references: [id])
+  exams       Exam[]
+  assignments Assignment[]
+  attendances Attendance[]
+}
+
+model Exam {
+  id        Int      @id @default(autoincrement())
+  title     String
+  startTime DateTime
+  endTime   DateTime
+
+  lessonId Int
+  lesson   Lesson   @relation(fields: [lessonId], references: [id])
+  results  Result[]
+}
+
+model Assignment {
+  id        Int      @id @default(autoincrement())
+  title     String
+  startDate DateTime
+  dueDate   DateTime
+  lessonId Int
+  lesson   Lesson   @relation(fields: [lessonId], references: [id])
+  results  Result[]
+}
+
+model Result {
+  id    Int @id @default(autoincrement())
+  score Int
+
+  examId       Int?
+  exam         Exam?       @relation(fields: [examId], references: [id])
+  assignmentId Int?
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id])
+  studentId    String
+  student      Student     @relation(fields: [studentId], references: [id])
+}
+
+model Attendance {
+  id      Int      @id @default(autoincrement())
+  date    DateTime
+  present Boolean
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
+  lessonId  Int
+  lesson    Lesson  @relation(fields: [lessonId], references: [id])
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  startTime   DateTime
+  endTime     DateTime
+
+  classId Int?
+  class   Class? @relation(fields: [classId], references: [id])
+}
+
+model Announcement {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  date        DateTime
+
+  classId Int?
+  class   Class? @relation(fields: [classId], references: [id])
+}
+
+enum UserSex {
+  MALE
+  FEMALE
+}
+
+enum Day {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+}
