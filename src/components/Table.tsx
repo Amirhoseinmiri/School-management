@@ -16,7 +16,7 @@ const Table = ({
   return (
     <table className="w-full mt-4">
       <thead>
-        <tr className="text-sm text-left  text-gray-500">
+        <tr className="text-sm text-left text-gray-500">
           {columns.map((column, index) => (
             <th
               key={index}
