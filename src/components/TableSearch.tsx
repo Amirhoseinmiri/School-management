@@ -28,13 +28,6 @@ const TableSearch = () => {
         placeholder="search..."
         className="outline-none w-[200px] bg-transparent p-2"
       />
-
-      <button
-        type="submit"
-        className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaSky"
-      >
-        <Image src={"/search.png"} alt="" width={14} height={14} />
-      </button>
     </form>
   );
 };
