@@ -133,10 +133,16 @@ const StudentDetails = () => {
             >
               Student&apos;s Exams
             </Link>
-            <Link className="p-3 rounded-md bg-pink-50" href={"/"}>
+            <Link
+              className="p-3 rounded-md bg-pink-50"
+              href={`/list/assignments?classId=${2}`}
+            >
               Student&apos;s Assignments
             </Link>
-            <Link className="p-3 rounded-md bg-lamaPurpleLight" href={"/"}>
+            <Link
+              className="p-3 rounded-md bg-lamaPurpleLight"
+              href={`/list/assignments?studentId=${"student2"}`}
+            >
               Student&apos;s Results
             </Link>
           </div>

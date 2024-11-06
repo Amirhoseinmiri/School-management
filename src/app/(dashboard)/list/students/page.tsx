@@ -126,9 +126,9 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, studentsData } from "@/lib/data";
 import prisma from "@/lib/prisma";
 import { ITEMS_PER_PAGE } from "@/lib/settings";
+import { auth } from "@clerk/nextjs/server";
 import { Class, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -174,6 +174,9 @@ const StudentListPage = async ({
   const { page, ...queryParams } = searchParams;
 
   const p = page ? parseInt(page) : 1;
+
+  const { sessionClaims } = await auth();
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
 
   // URL PARAMS CONDITION
 
